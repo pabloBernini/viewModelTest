@@ -41,36 +41,33 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    dependencies {
+        implementation(libs.androidx.lifecycle.viewmodel.ktx)
+        implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.lifecycle.runtime.ktx)
+        implementation(libs.androidx.activity.compose)
+        implementation(platform(libs.androidx.compose.bom))
+        implementation(libs.androidx.ui)
+        implementation(libs.androidx.ui.graphics)
+        implementation(libs.androidx.ui.tooling.preview)
+        implementation(libs.androidx.material3)
+        testImplementation(libs.junit)
+        androidTestImplementation(libs.androidx.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
+        androidTestImplementation(platform(libs.androidx.compose.bom))
+        androidTestImplementation(libs.androidx.ui.test.junit4)
+        debugImplementation(libs.androidx.ui.tooling)
+        debugImplementation(libs.androidx.ui.test.manifest)
+        implementation(libs.lifecycle.runtime.compose)
+        implementation(libs.androidx.navigation.compose) // lub nowsza wersja
+        implementation(libs.androidx.lifecycle.viewmodel.compose)
+        // Hilt
+        implementation(libs.hilt.android) // lub nowsza wersja
+        implementation(libs.androidx.hilt.navigation.compose) // lub nowsza wersja (jeśli używasz Hilt z Navigation Compose)
 
-    implementation("androidx.navigation:navigation-compose:2.7.6") // lub nowsza wersja
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0") // lub nowsza wersja
-
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.48") // lub nowsza wersja
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0") // lub nowsza wersja (jeśli używasz Hilt z Navigation Compose)
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+        testImplementation(libs.junit)
+        androidTestImplementation(libs.androidx.junit.v115)
+        androidTestImplementation(libs.androidx.espresso.core.v351)
+        kapt(libs.hilt.android.compiler)
+    }
 }

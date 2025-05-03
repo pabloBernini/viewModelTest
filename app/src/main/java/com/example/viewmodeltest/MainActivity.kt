@@ -3,76 +3,84 @@ package com.example.viewmodeltest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.viewmodeltest.ui.screens.vievmodels.CounterViewModel
-import com.example.viewmodeltest.ui.screens.vievmodels.UserViewModel
-import com.example.viewmodeltest.ui.theme.ViewmodelTestTheme
+import com.example.viewmodeltest.ui.theme.MyDogAppTheme
+
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.viewmodeltest.model.AddDog
+import com.example.viewmodeltest.model.DogScreen
+import com.example.viewmodeltest.model.DogsList
+import com.example.viewmodeltest.ui.screens.AddDogScreen
+import com.example.viewmodeltest.ui.screens.DogDetailsScreen
+import com.example.viewmodeltest.ui.screens.DogsScreen
+import com.example.viewmodeltest.ui.viewModels.AddDogVM
+import com.example.viewmodeltest.ui.viewModels.DogDetailsVM
+import com.example.viewmodeltest.ui.viewModels.DogsListVM
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen()
+            val viewModel: DogsListVM by viewModels()
+            val detailsViewModel: DogDetailsVM by viewModels()
+            val addDogViewModel: AddDogVM by viewModels()
+            MyDogAppTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MyDogApp(viewModel, detailsViewModel, addDogViewModel)
+                }
+            }
         }
     }
 }
 
 @Composable
-fun MainScreen(
-    userViewModel: UserViewModel = viewModel(),
-    counterViewModel: CounterViewModel = viewModel()
+fun MyDogApp(
+    viewModel: DogsListVM,
+    detailsViewModel: DogDetailsVM,
+    addDogViewModel: AddDogVM
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = DogsList
     ) {
-        // Sekcja dla UserViewModel
-        TextField(
-            value = userViewModel.userName.value,
-            onValueChange = { userViewModel.updateUserName(it) },
-            label = { Text("Imię") }
-        )
-        TextField(
-            value = userViewModel.userAge.value.toString(),
-            onValueChange = { userViewModel.updateUserAge(it.toIntOrNull() ?: 0) },
-            label = { Text("Wiek") }
-        )
-        Text("Imię: ${userViewModel.userName.value}, Wiek: ${userViewModel.userAge.value}")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Sekcja dla CounterViewModel
-        Text("Licznik: ${counterViewModel.count.value}")
-        Button(onClick = { counterViewModel.incrementCount() }) {
-            Text("Zwiększ licznik")
+        composable(DogsList) {
+            DogsScreen(
+                viewModel = viewModel,
+                navigationController = navController
+            )
         }
-    }
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ViewmodelTestTheme {
-        Greeting("Android")
+        composable(
+            route = "$DogScreen/{dogName}",
+            arguments = listOf(navArgument("dogName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val dogName = backStackEntry.arguments?.getString("dogName")
+            DogDetailsScreen(
+                viewModel = detailsViewModel,
+                dogName = dogName,
+                onBackPressed = { navController.popBackStack() }
+            )
+        }
+        composable(AddDog) {
+            AddDogScreen(
+                addDogViewModel = addDogViewModel,
+                dogsListViewModel = viewModel,
+                onDogAdded = { navController.popBackStack() }
+            )
+        }
     }
 }
