@@ -4,4 +4,4 @@ const val DogsList = "DogsList"
 const val DogScreen = "DogScreen"
 const val AddDog = "AddDog"
 const val Profile = "Profile"
-
+const val Settings = "Settings"

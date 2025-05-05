@@ -2,6 +2,8 @@ package com.example.viewmodeltest.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,22 +24,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.viewmodeltest.model.AddDog
+import com.example.viewmodeltest.model.DogsList
 import com.example.viewmodeltest.model.Profile
-
+import com.example.viewmodeltest.model.Settings
 @Composable
-fun Navbar(navigationController: NavController, screenType: String = "main") {
+fun Navbar(navigationController: NavController,
+           screenType: String = "main",
+           scaffoldPadding: PaddingValues,
+           dogName: String? = null,
+           onDelete: ((String) -> Unit)? = null) {
     var navTitle = ""
     val mainTitle = "DoggosApp"
     val profileTitle = "Profile"
     val settingsTitle = "Settings"
     val addDogTitle = "Add Doggo"
+    val dogDetails = "Dog Details"
 
     when (screenType) {
         "main" -> navTitle = mainTitle
         "profile" -> navTitle = profileTitle
         "settings" -> navTitle = settingsTitle
-        "AddDog" -> navTitle = addDogTitle
+        "addDog" -> navTitle = addDogTitle
+        "dogDetails" -> navTitle = dogDetails
+
     }
 
 
@@ -46,6 +56,10 @@ fun Navbar(navigationController: NavController, screenType: String = "main") {
 
     ///// NAVBAR /////
 
+        Column(
+            modifier = Modifier
+                .padding(scaffoldPadding)
+        ) {
 
     Row(
         modifier = Modifier
@@ -59,7 +73,8 @@ fun Navbar(navigationController: NavController, screenType: String = "main") {
         if(screenType == "main") {
 
         IconButton(
-            onClick = { /*TODO*/ }
+            onClick = { navigationController.navigate(Settings)
+                }
 
         ) {
             Icon(
@@ -68,7 +83,7 @@ fun Navbar(navigationController: NavController, screenType: String = "main") {
             )
         }} else {
             IconButton(
-                onClick = { navigationController.popBackStack() }
+                onClick = { navigationController.navigate(DogsList) }
 
             ) {
                 Icon(
@@ -94,11 +109,24 @@ fun Navbar(navigationController: NavController, screenType: String = "main") {
                 contentDescription = "profile",
             )
         }
-        } else {
+        } else if (screenType == "dogDetails") {
+            IconButton(
+                onClick = {
+                    onDelete?.invoke(dogName.toString())
+                    navigationController.navigate(DogsList)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "delete",
+                )
+            }
+        }
+        else {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "back",
                 tint = Color.Transparent
             )
         }
-    }}
+    }}}

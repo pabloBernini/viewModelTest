@@ -39,8 +39,8 @@ class DogsListVM : ViewModel() {
         }
     }
 
-    fun removeDog(id: Int) {
-        dogs.removeIf { it.id == id }
+    fun removeDog(dogName: String) {
+        dogs.removeIf { it.name == dogName }
         _uiState.update {
             UiState.Success(dogs.toList())
         }
