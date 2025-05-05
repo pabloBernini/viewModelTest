@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,9 +21,11 @@ import androidx.navigation.navArgument
 import com.example.viewmodeltest.model.AddDog
 import com.example.viewmodeltest.model.DogScreen
 import com.example.viewmodeltest.model.DogsList
+import com.example.viewmodeltest.model.Profile
 import com.example.viewmodeltest.ui.screens.AddDogScreen
 import com.example.viewmodeltest.ui.screens.DogDetailsScreen
 import com.example.viewmodeltest.ui.screens.DogsScreen
+import com.example.viewmodeltest.ui.screens.ProfileScreen
 import com.example.viewmodeltest.ui.viewModels.AddDogVM
 import com.example.viewmodeltest.ui.viewModels.DogDetailsVM
 import com.example.viewmodeltest.ui.viewModels.DogsListVM
@@ -80,6 +83,11 @@ fun MyDogApp(
                 addDogViewModel = addDogViewModel,
                 dogsListViewModel = viewModel,
                 onDogAdded = { navController.popBackStack() }
+            )
+        }
+        composable(Profile) {
+            ProfileScreen(
+                navigationController = navController
             )
         }
     }
