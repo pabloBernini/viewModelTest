@@ -96,8 +96,11 @@ fun DogsScreen(
 
         if (items is DogsListVM.UiState.Success) {
             DogsList(
+                name = viewModel.name.value,
                 dogs = (items as DogsListVM.UiState.Success).data,
                 navController = navigationController,
+                onNameChange = { viewModel.name.value = it },
+                onSave = viewModel::addDog,
                 onFav = viewModel::triggerFav,
                 onTrash = viewModel::removeDog
             )
@@ -106,10 +109,13 @@ fun DogsScreen(
 }
 @Composable
 fun DogsList(
+    name: String,
     dogs: List<Dog>,
     navController: NavController,
-    onFav: (name: String) -> Unit,
-    onTrash: (name: String) -> Unit
+    onNameChange: (name: String) -> Unit,
+    onSave: (name: String) -> Unit,
+    onFav: (id:Int) -> Unit,
+    onTrash: (id:Int) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -140,7 +146,7 @@ fun DogsList(
 
                 IconButton(
                     onClick = {
-                        onFav(dog.name)
+                        onFav(dog.id)
                     }
                 ) {
                     if (dog.isFavorite) {
@@ -158,7 +164,7 @@ fun DogsList(
                 }
 
                 IconButton(onClick = {
-                    onTrash(dog.name)
+                    onTrash(dog.id)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Delete,

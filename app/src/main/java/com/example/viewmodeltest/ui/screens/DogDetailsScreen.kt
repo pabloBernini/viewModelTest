@@ -16,7 +16,7 @@ import com.example.viewmodeltest.ui.viewModels.DogsListVM
 @Composable
 fun DogDetailsScreen(
     viewModel: DogsListVM,
-    dogName: String?,
+    dogName: String,
     onBackPressed: () -> Unit,
     scaffoldPadding: PaddingValues,
     navigationController: NavController
@@ -31,18 +31,13 @@ fun DogDetailsScreen(
                 "dogDetails",
                 scaffoldPadding,
                 dogName,
-                onDelete = { // Receive the dogName as a parameter
-                    viewModel.removeDog(dogName.toString()) // Pass the dogName to removeDog
-                    // Navigate back to the DogsList screen after deletion
+                onDelete = {
+                    viewModel.removeDogByName(dogName) // Pass the dogName to removeDog
                     onBackPressed()
                 })
 
             Text(text = "Dog Details Screen")
-            if (dogName != null) {
-                Text(text = "Dog Name: $dogName")
-            } else {
-                Text(text = "Dog name not provided")
-            }
+
             Button(onClick = { onBackPressed() }) {
                 Text("Go Back")
             }

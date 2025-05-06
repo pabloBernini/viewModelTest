@@ -11,26 +11,28 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.viewmodeltest.ui.viewModels.AddDogVM
 import com.example.viewmodeltest.ui.viewModels.DogsListVM
 import androidx.navigation.NavController
+import com.example.viewmodeltest.model.DogsList
+import com.example.viewmodeltest.model.Settings
 import com.example.viewmodeltest.ui.components.Navbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddDogScreen(
-    addDogViewModel: AddDogVM,
     dogsListViewModel: DogsListVM,
-    onDogAdded: () -> Unit,
     scaffoldPadding: PaddingValues,
     navigationController: NavController
 ) {
-    val name by addDogViewModel.name
 
-    val breed by addDogViewModel.breed
+    var name by remember { mutableStateOf("") }
+    var breed by remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier
@@ -40,7 +42,7 @@ fun AddDogScreen(
             Navbar(navigationController, "addDog", scaffoldPadding)
             OutlinedTextField(
                 value = name,
-                onValueChange = { addDogViewModel.updateName(it) },
+                onValueChange = { name = it },
                 label = { Text("Dog Name") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -48,7 +50,7 @@ fun AddDogScreen(
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = breed,
-                onValueChange = { addDogViewModel.updateBreed(it) },
+                onValueChange = { breed = it },
                 label = { Text("Dog Breed") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -56,10 +58,10 @@ fun AddDogScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if (name.isNotBlank() && breed.isNotBlank()) {
-                        dogsListViewModel.addDog(name, breed)
-                        addDogViewModel.clear()
-                        onDogAdded()
+                    if (name.isNotBlank()) {
+                        dogsListViewModel.addDog(name)
+                        navigationController.navigate(DogsList)
+
                     }
                 },
                 modifier = Modifier.fillMaxWidth()

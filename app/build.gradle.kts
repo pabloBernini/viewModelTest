@@ -2,7 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-        id("kotlin-kapt")
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -62,12 +63,15 @@ dependencies {
         implementation(libs.androidx.navigation.compose) // lub nowsza wersja
         implementation(libs.androidx.lifecycle.viewmodel.compose)
         // Hilt
-        implementation(libs.hilt.android) // lub nowsza wersja
-        implementation(libs.androidx.hilt.navigation.compose) // lub nowsza wersja (jeśli używasz Hilt z Navigation Compose)
 
-        testImplementation(libs.junit)
-        androidTestImplementation(libs.androidx.junit.v115)
-        androidTestImplementation(libs.androidx.espresso.core.v351)
-        kapt(libs.hilt.android.compiler)
+
+        // Retrofit
+        implementation(libs.retrofit2.kotlinx.serialization.converter)
+        implementation(libs.retrofit)
+
+        // Room
+        implementation(libs.androidx.room.runtime)
+        implementation(libs.androidx.room.ktx)
+        ksp(libs.androidx.room.compiler)
     }
 }
