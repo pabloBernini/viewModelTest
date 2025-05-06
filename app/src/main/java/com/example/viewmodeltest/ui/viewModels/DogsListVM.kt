@@ -36,7 +36,6 @@ class DogsListVM(
     }
 
     var name = mutableStateOf("")
-    var breed = mutableStateOf("")
 
 ///// name powinno byc puste
 val uiState: StateFlow<UiState> = dogsRepository
@@ -50,8 +49,6 @@ val uiState: StateFlow<UiState> = dogsRepository
 
 
 
-    var searchInput = mutableStateOf("")
-    private var filteredDogs = mutableListOf<Dog>()
 
     private var nextId = 0
 
@@ -64,15 +61,14 @@ val uiState: StateFlow<UiState> = dogsRepository
 
     )
     init {
-        filteredDogs.addAll(dogs)
         updateList()
     }
-
-
 
     fun dogCount(): Int {
         return dogs.size
     }
+
+
     fun favCount(): Int {
         return dogs.count { it.isFavorite }
     }
@@ -85,9 +81,9 @@ val uiState: StateFlow<UiState> = dogsRepository
             UiState.Success(sortedDogs.toList())
         }
     }
-    fun addDog(name: String) {
+    fun addDog(name: String, breed: String) {
         viewModelScope.launch {
-            dogsRepository.add(name)
+            dogsRepository.add(name, breed)
         }
         /////this.name.value = ""
     }
@@ -110,24 +106,11 @@ val uiState: StateFlow<UiState> = dogsRepository
     }
 
 
-    fun filterList() {
-        val trimmedQuery = searchInput.value.trim().lowercase()
-        filteredDogs.clear()
-        if (trimmedQuery.isBlank()) {
-            filteredDogs.addAll(dogs)
-        }
-        else {
-            filteredDogs.addAll(dogs.filter {
-                it.name.lowercase().contains(trimmedQuery) ||
-                        it.breed.lowercase().contains(trimmedQuery)
-            })
-        }
-        val sortedDogs = filteredDogs.sortedWith(
-            compareByDescending<Dog> { it.isFavorite }
-                .thenBy { it.name }
-        )
-        _uiState.update {
-            UiState.Success(sortedDogs.toList())
+    fun filterList(name: String) {
+        viewModelScope.launch {
+            dogsRepository.getDogsByName(name).collect { dogs ->
+                _uiState.value = UiState.Success(dogs)
+            }
         }
     }
     companion object {

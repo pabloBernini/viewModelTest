@@ -59,7 +59,7 @@ fun AddDogScreen(
             Button(
                 onClick = {
                     if (name.isNotBlank()) {
-                        dogsListViewModel.addDog(name)
+                        dogsListViewModel.addDog(name, breed)
                         navigationController.navigate(DogsList)
 
                     }

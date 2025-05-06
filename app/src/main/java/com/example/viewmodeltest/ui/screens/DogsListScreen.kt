@@ -44,7 +44,7 @@ fun DogsScreen(
     scaffoldPadding: PaddingValues
 ) {
     val items by viewModel.uiState.collectAsStateWithLifecycle()
-    val searchInput by viewModel.searchInput
+    var searchInput = ""
 
 
 
@@ -68,8 +68,8 @@ fun DogsScreen(
             OutlinedTextField(
                 value = searchInput,
                 onValueChange = { newValue ->
-                    viewModel.searchInput.value = newValue
-                    viewModel.filterList()
+                    searchInput = newValue
+                    viewModel.filterList(searchInput)
                 },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
@@ -96,11 +96,8 @@ fun DogsScreen(
 
         if (items is DogsListVM.UiState.Success) {
             DogsList(
-                name = viewModel.name.value,
                 dogs = (items as DogsListVM.UiState.Success).data,
                 navController = navigationController,
-                onNameChange = { viewModel.name.value = it },
-                onSave = viewModel::addDog,
                 onFav = viewModel::triggerFav,
                 onTrash = viewModel::removeDog
             )
@@ -109,11 +106,8 @@ fun DogsScreen(
 }
 @Composable
 fun DogsList(
-    name: String,
     dogs: List<Dog>,
     navController: NavController,
-    onNameChange: (name: String) -> Unit,
-    onSave: (name: String) -> Unit,
     onFav: (id:Int) -> Unit,
     onTrash: (id:Int) -> Unit,
 ) {

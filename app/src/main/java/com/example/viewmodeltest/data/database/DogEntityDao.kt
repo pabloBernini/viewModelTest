@@ -11,7 +11,7 @@ interface DogEntityDao {
     @Query("SELECT * FROM dogs")
     fun getAllDogs(): Flow<List<DogEntity>>
 
-    @Query("SELECT * FROM dogs ORDER BY uid DESC LIMIT 10")
+    @Query("SELECT * FROM dogs ORDER BY name ASC")
     fun getSortedDogs(): Flow<List<DogEntity>>
 
     @Query("SELECT * FROM dogs WHERE isFav = 1")

@@ -82,6 +82,8 @@ fun MyDogApp(
         ) { backStackEntry ->
             val viewModel: DogsListVM =
                 viewModel(factory = DogsListVM.Factory)
+            val dogDetailsViewmodel: DogDetailsVM =
+                viewModel(factory = DogDetailsVM.Factory)
             val dogName = backStackEntry.arguments?.getString("dogName")
             var dogNameNotNull = ""
             if (dogName != null) {
@@ -92,7 +94,9 @@ fun MyDogApp(
                 dogName = dogNameNotNull,
                 onBackPressed = { navController.popBackStack() },
                 navigationController = navController,
-                scaffoldPadding = paddingValues
+                scaffoldPadding = paddingValues,
+                uiState = dogDetailsViewmodel.uiState,
+                retryAction = dogDetailsViewmodel::getDogImage
             )
         }
         composable(AddDog) {
