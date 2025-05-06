@@ -27,17 +27,16 @@ class DogsListVM : ViewModel() {
 
     )
     init {
-        _uiState.update {
-            UiState.Success(
-                dogs.toList()
-            )
-        }
+        updateList()
     }
 
 
 
     fun dogCount(): Int {
         return dogs.size
+    }
+    fun favCount(): Int {
+        return dogs.count { it.isFavorite }
     }
     private fun updateList() {
         val sortedDogs = dogs.sortedWith(
@@ -55,9 +54,7 @@ class DogsListVM : ViewModel() {
 
     fun removeDog(dogName: String) {
         dogs.removeIf { it.name == dogName }
-        _uiState.update {
-            UiState.Success(dogs.toList())
-        }
+        updateList()
     }
 
     fun triggerFav(name: String) {

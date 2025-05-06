@@ -88,7 +88,7 @@ fun DogsScreen(
 
         Row(modifier = Modifier.padding(10.dp)) {
             Text("\uD83D\uDC36: ${viewModel.dogCount()} ")
-            ////Text("\uD83D\uDC97: ${names.count { it.isPinned }}")
+            Text("\uD83D\uDC97: ${viewModel.favCount()}")
         }
 
         if (items is DogsListVM.UiState.Success) {
