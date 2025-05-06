@@ -20,6 +20,10 @@ class DogsListVM : ViewModel() {
 
     private val dogs = mutableListOf(
         Dog(nextId++, "Buddy", "Labrador"),
+        Dog(nextId++, "aa", "dd"),
+        Dog(nextId++, "sada", "asdsda"),
+        Dog(nextId++, "AADSA", "asd"),
+        Dog(nextId++, "zzzzz", "zzzz"),
 
     )
     init {
@@ -32,11 +36,21 @@ class DogsListVM : ViewModel() {
 
 
 
+    fun dogCount(): Int {
+        return dogs.size
+    }
+    private fun updateList() {
+        val sortedDogs = dogs.sortedWith(
+            compareByDescending<Dog> { it.isFavorite }
+                .thenBy { it.name }
+        )
+        _uiState.update {
+            UiState.Success(sortedDogs.toList())
+        }
+    }
     fun addDog(name: String, breed: String) {
         dogs.add(Dog(nextId++, name, breed))
-        _uiState.update {
-            UiState.Success(dogs.toList())
-        }
+        updateList()
     }
 
     fun removeDog(dogName: String) {
@@ -46,13 +60,13 @@ class DogsListVM : ViewModel() {
         }
     }
 
-    fun triggerFav(id: Int) {
-        val dogIndex = dogs.indexOfFirst { it.id == id }
-        if (dogIndex >= 0) {
-            dogs[dogIndex].isFavorite = !dogs[dogIndex].isFavorite
-        }
-        _uiState.update {
-            UiState.Success(dogs.toList())
+    fun triggerFav(name: String) {
+        val element = dogs.find { it.name == name } ?: return
+        val index = dogs.indexOf(element)
+        if (index != -1) {
+            val updatedDog = element.copy(isFavorite = !element.isFavorite)
+            dogs[index] = updatedDog
+            updateList()
         }
     }
 

@@ -42,14 +42,16 @@ fun AddDogScreen(
                 value = name,
                 onValueChange = { addDogViewModel.updateName(it) },
                 label = { Text("Dog Name") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 value = breed,
                 onValueChange = { addDogViewModel.updateBreed(it) },
                 label = { Text("Dog Breed") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(

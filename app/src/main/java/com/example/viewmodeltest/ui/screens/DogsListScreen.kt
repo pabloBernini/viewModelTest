@@ -25,12 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,6 +47,7 @@ fun DogsScreen(
     val name by viewModel.name
 
 
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -72,8 +67,10 @@ fun DogsScreen(
         ) {
             OutlinedTextField(
                 value = name,
-                onValueChange = { viewModel.name.value = it }, // Update name in VM
-                modifier = Modifier.weight(1f) // Use weight for flexible sizing
+                onValueChange = { viewModel.name.value = it },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                placeholder = { Text("Search for doggos") }
             )
 
             OutlinedButton(
@@ -87,6 +84,11 @@ fun DogsScreen(
                     contentDescription = null
                 )
             }
+        }
+
+        Row(modifier = Modifier.padding(10.dp)) {
+            Text("\uD83D\uDC36: ${viewModel.dogCount()} ")
+            ////Text("\uD83D\uDC97: ${names.count { it.isPinned }}")
         }
 
         if (items is DogsListVM.UiState.Success) {
@@ -103,7 +105,7 @@ fun DogsScreen(
 fun DogsList(
     dogs: List<Dog>,
     navController: NavController,
-    onFav: (id: Int) -> Unit,
+    onFav: (name: String) -> Unit,
     onTrash: (name: String) -> Unit
 ) {
     LazyColumn(
@@ -132,32 +134,24 @@ fun DogsList(
                 )
                 Spacer(Modifier.weight(1f))
 
-                val brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF6A5ACD),
-                        Color(0xFFFFC0CB)
-                    ),
-                    start = Offset(0f, 0f),
-                    end = Offset(50f, 100f)
-                )
 
                 IconButton(
                     onClick = {
-                        onFav(dog.id)
+                        onFav(dog.name)
                     }
                 ) {
+                    if (dog.isFavorite) {
+
                     Icon(
-                        modifier = Modifier
-                            .graphicsLayer(alpha = 0.99f)
-                            .drawWithCache {
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(brush, blendMode = BlendMode.SrcAtop)
-                                }
-                            },
-                        imageVector = if (dog.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = null,
-                    )
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "pin")
+                    }
+                           else {
+                                Icon(
+                                    imageVector = Icons.Default.FavoriteBorder,
+                                    contentDescription = "pinned"
+                                )
+                            }
                 }
 
                 IconButton(onClick = {
