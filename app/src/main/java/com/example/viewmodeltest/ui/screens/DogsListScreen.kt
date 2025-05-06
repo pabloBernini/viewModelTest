@@ -44,7 +44,7 @@ fun DogsScreen(
     scaffoldPadding: PaddingValues
 ) {
     val items by viewModel.uiState.collectAsStateWithLifecycle()
-    val name by viewModel.name
+    val searchInput by viewModel.searchInput
 
 
 
@@ -66,15 +66,18 @@ fun DogsScreen(
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = name,
-                onValueChange = { viewModel.name.value = it },
+                value = searchInput,
+                onValueChange = { newValue ->
+                    viewModel.searchInput.value = newValue
+                    viewModel.filterList()
+                },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 placeholder = { Text("Search for doggos") }
             )
 
             OutlinedButton(
-                enabled = name.isNotEmpty() == false,
+                enabled = searchInput.isNotEmpty() == false,
                 onClick = {
                     navigationController.navigate(AddDog)
                 }

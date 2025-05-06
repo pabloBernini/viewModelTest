@@ -1,6 +1,8 @@
 package com.example.viewmodeltest.ui.viewModels
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import com.example.viewmodeltest.model.Dog
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,12 +10,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+
+
 class DogsListVM : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     var name = mutableStateOf("")
+    var searchInput = mutableStateOf("")
+    private var filteredDogs = mutableListOf<Dog>()
     var breed = mutableStateOf("")
 
     private var nextId = 0
@@ -27,6 +33,7 @@ class DogsListVM : ViewModel() {
 
     )
     init {
+        filteredDogs.addAll(dogs)
         updateList()
     }
 
@@ -64,6 +71,28 @@ class DogsListVM : ViewModel() {
             val updatedDog = element.copy(isFavorite = !element.isFavorite)
             dogs[index] = updatedDog
             updateList()
+        }
+    }
+
+
+    fun filterList() {
+        val trimmedQuery = searchInput.value.trim().lowercase()
+        filteredDogs.clear()
+        if (trimmedQuery.isBlank()) {
+            filteredDogs.addAll(dogs)
+        }
+        else {
+            filteredDogs.addAll(dogs.filter {
+                it.name.lowercase().contains(trimmedQuery) ||
+                        it.breed.lowercase().contains(trimmedQuery)
+            })
+        }
+        val sortedDogs = filteredDogs.sortedWith(
+            compareByDescending<Dog> { it.isFavorite }
+                .thenBy { it.name }
+        )
+        _uiState.update {
+            UiState.Success(sortedDogs.toList())
         }
     }
 
